@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from .models import Note
 from .forms import NoteForm
 
@@ -15,3 +15,12 @@ def create_note(request):
             form.save()
             return redirect('home')
     
+def delete_note(request,id):
+    if request.method=='POST':
+        note = get_object_or_404(Note, id=id)
+        note.delete()
+        return redirect('home')
+        
+
+
+
