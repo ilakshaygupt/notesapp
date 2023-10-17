@@ -17,16 +17,26 @@
             <textarea id="content" name="content" rows="4" required></textarea>
             <br>
             <button type="submit">Save Note</button>
+
         </form>
+        
     </section>
-            <h2>My Notes</h2>
-            <ul>
-                {% for note in notes %}
-                <li>
-                    <b>{{ note.title }}</b><br>
-                    {{ note.content }}
-                </li>
-                {% endfor %}
-            </ul>
+    
+    
+    <h2>My Notes</h2>
+    <ul>
+        {% for note in notes %}
+        <li>
+            <b>{{ note.title }}</b><br>
+            {{ note.content }}
+            </br>
+            <form method="post" action="{% url 'delete_note' id=note.id %}">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+               
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>
