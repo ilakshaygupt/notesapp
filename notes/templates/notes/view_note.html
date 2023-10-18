@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: burlywood;
+        align-items: center;
+    }
+    .row {
+        margin: 4%;
+    }
+    .card-body {
+        background-color: bisque;
+    }
+    .btn {
+        background-color: darkkhaki;
+    }
+    .card-title {
+        font-weight: bold;
+        font-size: 24px;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-4">
+                <div class="card-body text-center">
+                    <h5 class="card-title">{{ note.title }}</h5>
+                    <p class="card-text">{{ note.content }}</p>
+                    <form method="post" action="{% url 'delete_note' id=note.id %}" class="mt-3">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    <a href="{% url 'edit_note' id=note.id %}" class="btn btn-primary mt-3">Edit</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
