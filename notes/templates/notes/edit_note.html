@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+    body {
+        background-color: burlywood;
+        align-items: center;
+    }
+    .row {
+        margin: 4%;
+    }
+    .card-body {
+        background-color: bisque;
+    }
+    .btn {
+        background-color: darkkhaki;
+    }
+    .card-title {
+        font-weight: bold;
+        font-size: 24px;
+    }
+</style>
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h2 class="card-title">Edit Note</h2>
+                    <form method="post" action="{% url 'edit_note' id=note.id %}">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
