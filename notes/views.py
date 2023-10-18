@@ -7,7 +7,7 @@ from .models import Note
 def home(request):
     notes = Note.objects.all()
     search_form = SearchForm(request.GET)
-    
+
     if search_form.is_valid():
         search_query = search_form.cleaned_data['search_query']
         if search_query:
@@ -23,14 +23,14 @@ def create_note(request):
             return redirect('home')
         
 def view_note(request,id):
-    note = get_object_or_404(Note, id=id)
+    note = get_object_or_404(Note, id=id)#404 page error if model not foun
     return render(request, 'notes/view_note.html', {'note': note})
 
 def delete_note(request,id):
     if request.method=='POST':
         note = get_object_or_404(Note, id=id)
         note.delete()
-        return redirect('home')
+        return redirect('home')#redirect to url absoulte or base url
 
 
 def edit_note(request, id):
