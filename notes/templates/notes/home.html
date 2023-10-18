@@ -23,7 +23,7 @@
                 <div class="card mt-2">
                     <div class="card-body">
                         <h4 class="card-title">Add a Note</h4>
-                        <form method="post" action="{% url 'create_note' %}">
+                        <form method="post" action="{% url 'create_note' %}" enctype="multipart/form-data">  <!-- Include enctype attribute -->
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="title">Title:</label>
@@ -33,8 +33,13 @@
                                 <label for="content">Content:</label>
                                 <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
                             </div>
+                            <div class="form-group">
+                                <label for="picture">Picture:</label>
+                                <input type="file" class="image" id="picture" name="picture" accept="image/*">
+                            </div>
                             <button type="submit" class="btn btn-primary btn-sm">Save</button>
                         </form>
+                        
                     </div>
                 </div>
             </div>
