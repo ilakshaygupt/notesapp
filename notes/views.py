@@ -17,11 +17,11 @@ def home(request):
 
 def create_note(request):
     if request.method == 'POST':
-        form = NoteForm(request.POST)
+        form = NoteForm(request.POST, request.FILES)  
         if form.is_valid():
-            form.save()
+            form.save()  
             return redirect('home')
-        
+
 def view_note(request,id):
     note = get_object_or_404(Note, id=id)#404 page error if model not foun
     return render(request, 'notes/view_note.html', {'note': note})
@@ -36,7 +36,7 @@ def delete_note(request,id):
 def edit_note(request, id):
     note = get_object_or_404(Note, id=id)
     if request.method == 'POST':
-        form = NoteForm(request.POST, instance=note)
+        form = NoteForm(request.POST,request.FILES, instance=note)
         if form.is_valid():
             form.save()
             return redirect('home')
