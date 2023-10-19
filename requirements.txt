@@ -10,3 +10,4 @@ yarg==0.1.9
 Pillow
 gunicorn
 djangorestframework
+whitenoise
