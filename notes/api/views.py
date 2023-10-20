@@ -1,7 +1,7 @@
 from rest_framework import generics
 from rest_framework.parsers import MultiPartParser, FormParser
 from ..models import Note
-from .serializers import NoteSerializer, NoteCreateSerializer , NoteDeleteSerializer
+from .serializers import NoteSerializer , NoteDeleteSerializer
 
 
 class NoteList(generics.ListCreateAPIView):
@@ -14,12 +14,12 @@ class NoteDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class NoteCreate(generics.CreateAPIView):
     queryset = Note.objects.all()
-    serializer_class = NoteCreateSerializer
+    serializer_class = NoteSerializer
     parser_classes = (MultiPartParser, FormParser)
 
 class NoteUpdate(generics.UpdateAPIView):
     queryset = Note.objects.all()
-    serializer_class = NoteCreateSerializer 
+    serializer_class = NoteSerializer 
     parser_classes = (MultiPartParser, FormParser)
 
 class NoteDelete(generics.RetrieveUpdateDestroyAPIView):

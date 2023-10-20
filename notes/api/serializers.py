@@ -7,10 +7,5 @@ class NoteSerializer(serializers.ModelSerializer):
         model = Note
         fields = '__all__'
 
-class NoteCreateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Note
-        fields = ('title', 'content', 'picture')
-
 class NoteDeleteSerializer(serializers.Serializer):
     pass
