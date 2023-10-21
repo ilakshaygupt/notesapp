@@ -23,14 +23,14 @@
                 <div class="card mt-2">
                     <div class="card-body">
                         <h4 class="card-title">Add a Note</h4>
-                        <form method="post" action="{% url 'create_note' %}" enctype="multipart/form-data">  <!-- Include enctype attribute -->
+                        <form method="post" action="{% url 'create_note' %}" enctype="multipart/form-data">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="title">Title:</label>
                                 <input type="text" class="form-control" id="title" name="title" required>
                             </div>
                             <div class="form-group">
-                                <label for="content">Content:</label>
+                                <label for "content">Content:</label>
                                 <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
                             </div>
                             <div class="form-group">
@@ -39,7 +39,6 @@
                             </div>
                             <button type="submit" class="btn btn-primary btn-sm">Save</button>
                         </form>
-                        
                     </div>
                 </div>
             </div>
@@ -47,10 +46,15 @@
     </div>
 </section>
 
-<h2>Search Notes</h2>
 <form method="get">
-    <h4>SEARCH QUERY {{ search_form.search_query }} <button type="submit" class="btn btn-primary">Search</button></h4>
+    <div class="form-group">
+        <label for="search_query">Search Query:</label>
+        <input type="text" name="search_query" class="form-control" size="20">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
 </form>
+
+
 
 <h2>My Notes</h2>
 <div class="row">
@@ -59,7 +63,7 @@
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">{{ note.title }}</h5>
-                    <a href="{% url 'view_note' id=note.id %}" class="btn btn-primary">View Note</a>
+                    <a href="{% url 'view_note' pk=note.id %}" class="btn btn-primary">View Note</a>
                 </div>
             </div>
         </div>

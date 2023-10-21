@@ -7,4 +7,4 @@ class NoteForm(forms.ModelForm):
         fields = ['title', 'content', 'picture']
 
 class SearchForm(forms.Form):
-    search_query = forms.CharField(max_length=100, required=False)
+    search_query = forms.CharField(label='Search',max_length=100, required=False)

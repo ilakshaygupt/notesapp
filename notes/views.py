@@ -1,45 +1,39 @@
-from django.shortcuts import get_object_or_404, redirect, render
-
-from .forms import NoteForm,SearchForm
+from django.views.generic import CreateView, DeleteView, UpdateView, ListView
 from .models import Note
+from .forms import NoteForm
 
+class HomeView(ListView):
+    model = Note
+    template_name = 'notes/home.html'
+    context_object_name = 'notes'
+    paginate_by = 10 
 
-def home(request):
-    notes = Note.objects.all()
-    search_form = SearchForm(request.GET)
-
-    if search_form.is_valid():
-        search_query = search_form.cleaned_data['search_query']
+    def get_queryset(self):
+        search_query = self.request.GET.get('search_query')
         if search_query:
-            notes = Note.objects.filter(title__icontains=search_query)
-        
-    return render(request, 'notes/home.html', {'notes': notes, 'search_form': search_form})
+            return Note.objects.filter(title__icontains=search_query)
+        return Note.objects.all()
 
-def create_note(request):
-    if request.method == 'POST':
-        form = NoteForm(request.POST, request.FILES)  
-        if form.is_valid():
-            form.save()  
-            return redirect('home')
+class CreateNoteView(CreateView):
+    model = Note
+    form_class = NoteForm
+    template_name = 'notes/note_form.html'
+    success_url = '/'
 
-def view_note(request,id):
-    note = get_object_or_404(Note, id=id)#404 page error if model not foun
-    return render(request, 'notes/view_note.html', {'note': note})
+class ViewNoteView(UpdateView):
+    model = Note
+    fields = ['title', 'content', 'picture']
+    template_name = 'notes/view_note.html'
+    
 
-def delete_note(request,id):
-    if request.method=='POST':
-        note = get_object_or_404(Note, id=id)
-        note.delete()
-        return redirect('home')#redirect to url absoulte or base url
+class DeleteNoteView(DeleteView):
+    model = Note
+    success_url = '/'
+    template_name = 'notes/delete_note.html'
+    
 
-
-def edit_note(request, id):
-    note = get_object_or_404(Note, id=id)
-    if request.method == 'POST':
-        form = NoteForm(request.POST,request.FILES, instance=note)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = NoteForm(instance=note)
-    return render(request, 'notes/edit_note.html', {'form': form, 'note': note})
+class UpdateNoteView(UpdateView):
+    model = Note
+    fields = ['title', 'content', 'picture']
+    template_name = 'notes/edit_note.html'
+    success_url = '/'

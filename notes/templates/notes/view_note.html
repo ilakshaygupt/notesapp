@@ -18,11 +18,19 @@
         font-weight: bold;
         font-size: 24px;
     }
-    
-    /* Add a class for the card */
+
     .card-container {
         max-width: 100%;
         height: auto;
+    }
+
+    .img-container {
+        max-width: 100%;
+        height: auto;
+    }
+    img{
+        height: 100px;
+        width: 100px;
     }
 </style>
 
@@ -31,16 +39,13 @@
         <div class="col-md-6">
             <div class="card mt-4 card-container">
                 <div class="card-body text-center">
-                    <h5 class="card-title">{{ note.title }}</h5>
-                    <p class="card-text">{{ note.content }}</p>
+                    <h5 class="card-title">{{ object.title }}</h5>
+                    <p class="card-text">{{ object.content }}</p>
                     <div class="img-container">
-                        <img src="{{ note.picture.url }}" style="max-width: 100%; height: auto;">
+                        <img src="{{ object.picture.url }}" alt="{{ object.title }}">
                     </div>
-                    <form method="post" action="{% url 'delete_note' id=note.id %}" class="mt-3">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                    <a href="{% url 'edit_note' id=note.id %}" class="btn btn-primary mt-3">Edit</a>
+                    <a href="{% url 'delete_note' pk=object.id %}" class="btn btn-danger mt-3" >Delete</a>
+                    <a href="{% url 'edit_note' pk=object.id %}" class="btn btn-primary mt-3">Edit</a>
                 </div>
             </div>
         </div>

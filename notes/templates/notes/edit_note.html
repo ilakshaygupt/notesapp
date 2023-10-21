@@ -25,7 +25,7 @@
             <div class="card mt-4">
                 <div class="card-body">
                     <h2 class="card-title">Edit Note</h2>
-                    <form method="post" action="{% url 'edit_note' id=note.id %}" enctype="multipart/form-data">
+                    <form method="post" action="{% url 'edit_note' pk=note.id %}" enctype="multipart/form-data">
                         {% csrf_token %}
                         {{ form.as_p }}
                         <img src="{{ note.picture.url }}" style="max-width: 100%; height: auto;">
