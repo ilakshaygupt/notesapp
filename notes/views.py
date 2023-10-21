@@ -1,45 +1,81 @@
-from django.shortcuts import get_object_or_404, redirect, render
-
-from .forms import NoteForm,SearchForm
+from django.views.generic import CreateView, DeleteView, UpdateView, ListView ,FormView
 from .models import Note
+from .forms import NoteForm
+from django.contrib.auth.views import LoginView,LogoutView
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login,logout
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render
+class CustomLoginView(LoginView):
+    template_name = 'notes/login.html'
+    fields = '__all__'
+    redirect_authenticated_user = True
 
+    def get_success_url(self):
+        return '/'
+    
+class RegisterPage(FormView):
+    template_name = 'notes/register.html'
+    form_class = UserCreationForm
+    redirect_authenticated_user = True
+    success_url = '/'
 
-def home(request):
-    notes = Note.objects.all()
-    search_form = SearchForm(request.GET)
-
-    if search_form.is_valid():
-        search_query = search_form.cleaned_data['search_query']
-        if search_query:
-            notes = Note.objects.filter(title__icontains=search_query)
-        
-    return render(request, 'notes/home.html', {'notes': notes, 'search_form': search_form})
-
-def create_note(request):
-    if request.method == 'POST':
-        form = NoteForm(request.POST, request.FILES)  
-        if form.is_valid():
-            form.save()  
+    def form_valid(self, form):
+        user=form.save()
+        if user is not None:
+            login(self.request,user)
+        return super(RegisterPage,self).form_valid(form)
+    def get(self,*args,**kwargs):
+        if self.request.user.is_authenticated:
             return redirect('home')
+        return super(RegisterPage,self).get(*args,**kwargs)
+class CustomLogoutView(LogoutView):
+    template_name = 'notes/logout.html'
+    fields = '__all__'
 
-def view_note(request,id):
-    note = get_object_or_404(Note, id=id)#404 page error if model not foun
-    return render(request, 'notes/view_note.html', {'note': note})
+    def get_success_url(self):
+        return '/login/'
+class HomeView(LoginRequiredMixin,ListView):
+    model = Note
+    template_name = 'notes/home.html'
+    context_object_name = 'notes'
+    paginate_by = 10 
 
-def delete_note(request,id):
-    if request.method=='POST':
-        note = get_object_or_404(Note, id=id)
-        note.delete()
-        return redirect('home')#redirect to url absoulte or base url
+    # def get_queryset(self):
+    #     search_query = self.request.GET.get('search_query')
+    #     if search_query:
+    #         return Note.objects.filter(title__icontains=search_query)
+    #     return Note.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['notes'] = Note.objects.all().filter(user=self.request.user)
+        if self.request.GET.get('search_query'):
+            context['notes'] = Note.objects.filter(title__icontains=self.request.GET.get('search_query'))
+        return context
 
+class CreateNoteView(LoginRequiredMixin,CreateView):
+    model = Note
+    form_class = NoteForm
+    template_name = 'notes/note_form.html'
+    success_url = '/'
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super(CreateNoteView, self).form_valid(form)
 
-def edit_note(request, id):
-    note = get_object_or_404(Note, id=id)
-    if request.method == 'POST':
-        form = NoteForm(request.POST,request.FILES, instance=note)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = NoteForm(instance=note)
-    return render(request, 'notes/edit_note.html', {'form': form, 'note': note})
+class ViewNoteView(LoginRequiredMixin,UpdateView):
+    model = Note
+    fields = ['title', 'content', 'picture']
+    template_name = 'notes/view_note.html'
+    
+
+class DeleteNoteView(LoginRequiredMixin,DeleteView):
+    model = Note
+    success_url = '/'
+    template_name = 'notes/delete_note.html'
+    
+
+class UpdateNoteView(LoginRequiredMixin,UpdateView):
+    model = Note
+    fields = ['title', 'content', 'picture']
+    template_name = 'notes/edit_note.html'
+    success_url = '/'
