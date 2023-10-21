@@ -3,10 +3,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from . import views
 
+
 urlpatterns = [
+    path('register/', views.RegisterPage.as_view(), name='register'),
     path('login/', views.CustomLoginView.as_view(), name='login'), 
     path('logout/', views.CustomLogoutView.as_view(), name='logout'),
-    path('register/', views.RegisterPage.as_view(), name='register'),
     path('', views.HomeView.as_view(), name='home'),
     path('create_note/', views.CreateNoteView.as_view(), name='create_note'),
     path('delete/<int:pk>/', views.DeleteNoteView.as_view(), name='delete_note'),
