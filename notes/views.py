@@ -1,8 +1,11 @@
-from django.views.generic import CreateView, DeleteView, UpdateView, ListView
+from django.views.generic import CreateView, DeleteView, UpdateView, ListView ,FormView
 from .models import Note
 from .forms import NoteForm
 from django.contrib.auth.views import LoginView,LogoutView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import login,logout
+from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import redirect, render
 class CustomLoginView(LoginView):
     template_name = 'notes/login.html'
     fields = '__all__'
@@ -11,6 +14,21 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         return '/'
     
+class RegisterPage(FormView):
+    template_name = 'notes/register.html'
+    form_class = UserCreationForm
+    redirect_authenticated_user = True
+    success_url = '/'
+
+    def form_valid(self, form):
+        user=form.save()
+        if user is not None:
+            login(self.request,user)
+        return super(RegisterPage,self).form_valid(form)
+    def get(self,*args,**kwargs):
+        if self.request.user.is_authenticated:
+            return redirect('home')
+        return super(RegisterPage,self).get(*args,**kwargs)
 class CustomLogoutView(LogoutView):
     template_name = 'notes/logout.html'
     fields = '__all__'
@@ -23,14 +41,16 @@ class HomeView(LoginRequiredMixin,ListView):
     context_object_name = 'notes'
     paginate_by = 10 
 
-    def get_queryset(self):
-        search_query = self.request.GET.get('search_query')
-        if search_query:
-            return Note.objects.filter(title__icontains=search_query)
-        return Note.objects.all()
+    # def get_queryset(self):
+    #     search_query = self.request.GET.get('search_query')
+    #     if search_query:
+    #         return Note.objects.filter(title__icontains=search_query)
+    #     return Note.objects.all()
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['notes'] = Note.objects.all().filter(user=self.request.user)
+        if self.request.GET.get('search_query'):
+            context['notes'] = Note.objects.filter(title__icontains=self.request.GET.get('search_query'))
         return context
 
 class CreateNoteView(LoginRequiredMixin,CreateView):
