@@ -12,3 +12,4 @@ gunicorn
 djangorestframework
 whitenoise
 cloudinary
+dotenv
